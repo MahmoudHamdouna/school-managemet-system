@@ -136,8 +136,6 @@ class StudentRegController extends Controller
 	public function StudentRegUpdate(request $request,$student_id){
 		DB::transaction(function() use($request,$student_id){
     	 
-
-    	 
 			$user = User::where('id',$student_id)->first();    	 
 			$user->name = $request->name;
 			$user->fname = $request->fname;
@@ -249,9 +247,9 @@ class StudentRegController extends Controller
 	public function StudentRegDetails($student_id){
 		$data['details'] = AssignStudent::with(['student','discount'])->where('student_id',$student_id)->first();
 
-		$pdf = Pdf::loadView('backend.student.student_reg.student_details_pdf',$data);
-		$pdf->setProtection(['copy','print'],'','pass');
-		return $pdf->stream('document.pdf');
+		// $pdf = Pdf::loadView('backend.student.student_reg.student_details_pdf',$data);
+		// $pdf->setProtection(['copy','print'],'','pass');
+		// return $pdf->stream('document.pdf');
 		// $pdf = pdf::loadView();
 	}
 

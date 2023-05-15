@@ -20,7 +20,7 @@
 
 				  <div class="box-body">
 				
-		<form method="post" action="{{ route('roll.generate.store') }}">
+		<form method="post" action="{{ route('marks.entry.store') }}">
 			@csrf
 			<div class="row">
 
@@ -95,7 +95,7 @@
 				
 					   </div> <!-- End Col md 4 -->
 					  
- 			<div class="col-md-3" style="padding-top: 25px;">
+ 			<div class="col-md-3" >
 
   <a id="search" class="btn btn-primary" name="search"> Search</a>
 	  
@@ -123,6 +123,8 @@
  			</tbody>
  			
  		</table>
+
+		<input type="submit" class="btn btn-rounded btn-primary" value="submit">
  		
  	</div>
  	

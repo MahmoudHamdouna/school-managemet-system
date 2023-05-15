@@ -30,7 +30,7 @@ class MonthlySalaryController extends Controller
             $where[] = ['date','like',$date.'%'];
         }
         
-        $date = EmployeeAttendance::select('employee_id')->groupBy('employee_id')->with(['user'])->where($where)->get();
+        $data = EmployeeAttendance::select('employee_id')->groupBy('employee_id')->with(['user'])->where($where)->get();
         // dd($allStudent);
         $html['thsource']  = '<th>SL</th>';
         $html['thsource'] .= '<th>Employee Name</th>';
@@ -39,14 +39,14 @@ class MonthlySalaryController extends Controller
         $html['thsource'] .= '<th>Action</th>';
 
 
-        foreach ($date as $key => $attend) {
+        foreach ($data as $key => $attend) {
             $totalattend = EmployeeAttendance::with(['user'])->where($where)->where('employee_id',$attend->employee_id)->get();
             $absentcount = count($totalattend->where('attend_status','Absent'));
 
             $color = 'success';
             $html[$key]['tdsource']  = '<td>'.($key+1).'</td>';
-            $html[$key]['tdsource'] .= '<td>'.$attend['student']['name'].'</td>';
-            $html[$key]['tdsource'] .= '<td>'.$attend['student']['salary'].'</td>';
+            $html[$key]['tdsource'] .= '<td>'.$attend['user']['name'].'</td>';
+            $html[$key]['tdsource'] .= '<td>'.$attend['user']['salary'].'</td>';
             
             $salary = (float)$attend['user']['salary'];
             $salaryperday = (float)$salary/30;

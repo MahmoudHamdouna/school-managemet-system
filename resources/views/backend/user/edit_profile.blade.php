@@ -64,8 +64,8 @@
                                                             <div class="controls">
                                                                 <select name="gender" id="usertype" required class="form-control">
                                                                     <option value="" selected=" ">Select Gender</option>
-                                                                    <option value="Male" {{ ($editData->usertype=="Male" ? "selected":"") }}>Male</option>
-                                                                    <option value="Female" {{ ($editData->usertype=="Female" ? "selected":"") }}>Female</option>
+                                                                    <option value="Male" {{ ($editData->gender=="Male" ? "selected":"") }}>Male</option>
+                                                                    <option value="Female" {{ ($editData->gender=="Female" ? "selected":"") }}>Female</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -79,7 +79,7 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <div class="controls">
-                                                                <img id="showImage" src="{{ (!empty($user->image)) ? url('upload/user_images/'.$user->image) : url('upload/no_image.jpg') }}"
+                                                                <img id="showImage" src="{{ (!empty($user->image))? url('upload/user_images/'.$user->image):url('upload/no_image.jpg') }}"
                                                                 style="width: 100px; float:left border:1px; solid:#000000;" alt="User Avatar">
                                                             </div>
                                                         </div>

@@ -53,7 +53,7 @@ class ProfileController extends Controller
 
     public function PasswordUpdate(request $request){
        $validatedData =$request->validate([
-            'oldpassword' => 'required|unique:users',
+            'oldpassword' => 'required',
             'password' => 'required|confirmed',
         ]);
 

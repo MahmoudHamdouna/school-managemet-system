@@ -1,6 +1,14 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Backend\Account\AccountSalaryController;
+use App\Http\Controllers\Backend\Account\OtherCostController;
+use App\Http\Controllers\Backend\Account\StudentFeeController;
+use App\Http\Controllers\Backend\Marks\GradeController;
+use App\Http\Controllers\Backend\Report\AttenReportControllerr;
+use App\Http\Controllers\Backend\Report\MarkSheetController;
+use App\Http\Controllers\Backend\Report\ProfiteController;
+use App\Http\Controllers\Backend\Report\ResultReportControllerr;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\ProfileController;
@@ -29,7 +37,6 @@ use App\Http\Controllers\Backend\DefaultController;
 
 
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,6 +47,9 @@ use App\Http\Controllers\Backend\DefaultController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::group(['middleware' => 'prevent-back-history'],function(){
+
 
 Route::get('/', function () {
     return view('auth.login');
@@ -242,6 +252,9 @@ Route::prefix('employees')->group(function(){
     Route::get('attendance/employee/view',[EmployeeAttendanceController::class,'AttendanceView'])->name('employee.attendance.view');
     Route::get('attendance/employee/add',[EmployeeAttendanceController::class,'AttendanceAdd'])->name('employee.attendance.add');
     Route::post('attendance/employee/store',[EmployeeAttendanceController::class,'AttendanceStore'])->name('store.employee.attendance');
+    Route::get('attendance/employee/edit/{date}', [EmployeeAttendanceController::class, 'AttendanceEdit'])->name('employee.attendance.edit');
+    Route::post('attendance/employee/update/{date}', [EmployeeAttendanceController::class, 'AttendanceUpdate'])->name('employee.attendance.update');
+    Route::get('attendance/employee/details/{date}', [EmployeeAttendanceController::class, 'AttendanceDetails'])->name('employee.attendance.details');
 
 
     //Employee Monthly Salary Routes
@@ -250,22 +263,74 @@ Route::prefix('employees')->group(function(){
     Route::get('monthly/salary/get',[MonthlySalaryController::class,'MonthlySalaryGet'])->name('employee.monthly.salary.get');
     Route::get('monthly/salary/payslip',[MonthlySalaryController::class,'MonthlySalaryPayslip'])->name('employee.monthly.salary.payslip');
 
-
+    //Mark Mangement Routes
     Route::prefix('marks')->group(function(){
         Route::get('marks/entry/add',[MarksController::class,'MarksAdd'])->name('marks.entry.add');
-    });
-    
+        Route::post('marks/entry/store',[MarksController::class,'MarksStore'])->name('marks.entry.store');
+        Route::get('marks/entry/edit',[MarksController::class,'MarksEdit'])->name('marks.entry.edit');
+        Route::get('marks/edit/getstudents',[MarksController::class,'MarksEditGetStudents'])->name('student.edit.getstudents');
+        Route::post('marks/entry/update',[MarksController::class,'MarksUpdate'])->name('marks.entry.update');
 
+        //Marks Entry Grade
+        Route::get('marks/grade/view',[GradeController::class,'MarksGradeView'])->name('marks.entry.grade');
+        Route::get('marks/grade/add',[GradeController::class,'MarksGradeAdd'])->name('marks.grade.add');
+        Route::post('marks/grade/store',[GradeController::class,'MarksGradeStore'])->name('store.marks.grade');
+        Route::get('marks/grade/edit/{id}',[GradeController::class,'MarksGradeEdit'])->name('marks.grade.edit');
+        Route::post('marks/grade/update/{id}',[GradeController::class,'MarksGradeUpdate'])->name('upadte.marks.grade');
+
+    });
     Route::get('marks/getsubject',[defaultController::class,'GetSubject'])->name('marks.getsubject');
     Route::get('student/marks/getstudents',[defaultController::class,'GetStudents'])->name('student.marks.getstudents');
 
 
+    Route::prefix('accounts')->group(function(){
+        Route::get('student/fee/view',[StudentFeeController::class,'StudentFeeView'])->name('student.fee.view');
+        Route::get('student/fee/add',[StudentFeeController::class,'StudentFeeAdd'])->name('student.fee.add');
+        Route::get('student/fee/getstudent',[StudentFeeController::class,'StudentFeeGetStudent'])->name('account.fee.getstudent');
+        Route::post('student/fee/store',[StudentFeeController::class,'StudentFeeStore'])->name('account.fee.store');
+
+        // Employee Salary Routes
+        Route::get('account/salary/view',[AccountSalaryController::class,'AccountSalaryView'])->name('account.salary.view');
+        Route::get('account/salary/add',[AccountSalaryController::class,'AccountSalaryAdd'])->name('account.salary.add');
+        Route::get('student/salary/getemployee',[AccountSalaryController::class,'AccountSalaryGetEmployee'])->name('account.salary.getemployee');
+        Route::post('student/salary/store',[AccountSalaryController::class,'AccountSalaryStore'])->name('account.salary.store');
+
+        //Other Cost Routes
+        Route::get('other/cost/view',[OtherCostController::class,'OtherCostView'])->name('other.cost.view');
+        Route::get('other/cost/add',[OtherCostController::class,'OtherCostAdd'])->name('other.cost.add');
+        Route::post('other/cost/store',[OtherCostController::class,'OtherCostStore'])->name('store.other.cost');
+        Route::get('other/cost/edit/{id}',[OtherCostController::class,'OtherCostEdit'])->name('edit.other.cost');
+        Route::post('other/cost/update/{id}',[OtherCostController::class,'OtherCostUpdate'])->name('update.other.cost');
+
+
+    });
+    
+    //Report All Management
+    Route::prefix('report')->group(function(){
+        Route::get('monthly/profit/view',[ProfiteController::class,'MonthlyProfitView'])->name('monthley.profit.view');
+        Route::get('monthly/profit/datewais',[ProfiteController::class,'MonthlyProfitDatewais'])->name('report.profit.datewais.get');
+        Route::get('monthly/profit/pdf',[ProfiteController::class,'MonthlyProfitPdf'])->name('report.profit.pdf');
+
+        // MarkSheet Generate Routes
+        Route::get('marksheet/generate/view',[MarkSheetController::class,'MarkSheetView'])->name('marksheet.generate.view');
+        Route::get('report/marksheet/get',[MarkSheetController::class,'MarkSheetGet'])->name('report.marksheet.get');
+
+        // Attendance Report Routes
+        Route::get('attendance/report/view',[AttenReportControllerr::class,'AttenReportView'])->name('attendance.report.view');
+        Route::get('report/attendance/get',[AttenReportControllerr::class,'AttenReportGet'])->name('report.attendance.get');
+
+        //Student Result Routes
+        Route::get('student/result/view',[ResultReportControllerr::class,'ResultView'])->name('student.result.view');
+        Route::get('student/result/get',[ResultReportControllerr::class,'ResultGet'])->name('report.student.result.get');
+
+        
+    });
     
     
 
 });
 
-    
 
-    
 });//End Middleware Auth Route
+
+});//prevent Back Middleware
